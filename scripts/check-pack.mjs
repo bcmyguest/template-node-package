@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /** Fails if `npm pack` would ship forbidden paths or miss required files. */
 import { spawnSync } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const pkg = (await import(path.join(ROOT, "package.json"), { with: { type: "json" } })).default;
+const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8"));
 
 const REQUIRED = ["package.json", "README.md", "LICENSE", "src/index.mjs", ...Object.values(pkg.bin ?? {})];
 
@@ -17,7 +18,12 @@ const FORBIDDEN = [
   [/(^|\/)node_modules(\/|$)/, "node_modules"],
 ];
 
-const r = spawnSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], { cwd: ROOT, encoding: "utf8" });
+const r = spawnSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], {
+  cwd: ROOT,
+  encoding: "utf8",
+  // npm is npm.cmd on Windows, which needs a shell.
+  shell: process.platform === "win32",
+});
 if (r.status !== 0) {
   console.error(r.stderr || r.stdout);
   process.exit(1);
