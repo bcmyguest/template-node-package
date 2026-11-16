@@ -1,0 +1,19 @@
+{
+  "name": "template-node-package",
+  "version": "0.1.0",
+  "description": "__DESCRIPTION__",
+  "license": "Apache-2.0",
+  "type": "module",
+  "homepage": "https://github.com/bcmyguest/template-node-package#readme",
+  "bugs": { "url": "https://github.com/bcmyguest/template-node-package/issues" },
+  "repository": { "type": "git", "url": "git+https://github.com/bcmyguest/template-node-package.git" },
+  "exports": { ".": "./src/index.mjs" },
+  "bin": { "template-node-package": "bin/template-node-package.mjs" },
+  "files": ["src/**/*.mjs", "bin/*.mjs", "LICENSE", "README.md"],
+  "engines": { "node": ">=24" },
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "test": "node --test",
+    "pack:check": "node scripts/check-pack.mjs"
+  }
+}
